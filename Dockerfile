@@ -30,7 +30,8 @@ COPY app ./app
 COPY api ./api
 
 # Compile TypeScript
-RUN npm run build
+RUN npm run build \
+    && ls dist/ 2>/dev/null || (echo "❌ build failed: dist/ not found" && exit 1)
 
 # ============================================
 # Stage 2: Production
