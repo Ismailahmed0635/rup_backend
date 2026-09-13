@@ -1,0 +1,185 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ USERS TABLE ============
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  name       String?
+  password   String   // bcrypt hash
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  stores Store[]
+}
+
+// ============ STORES TABLE ============
+model Store {
+  id              String   @id @default(cuid())
+  user_id         String
+  store_name      String
+  platform        String   // 'shopify' | 'woocommerce' | 'wordpress' | 'custom' | 'bank_transfer'
+  store_url       String
+  api_key         String   @unique
+  access_token    String?  // Shopify/WooCommerce access token
+  credits_balance Int      @default(5)  // 5 free credits on signup
+  is_active       Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  // Bank transfer details (for bank_transfer platform)
+  bank_account_name   String?
+  bank_account_number String?
+  bank_routing_number String?
+
+  user                User                @relation(fields: [user_id], references: [id])
+  products            Product[]
+  try_on_sessions     TryOnSession[]
+  credit_transactions CreditTransaction[]
+  user_photos         UserPhoto[]
+  payments            Payment[]
+
+  @@index([user_id])
+}
+
+// ============ PRODUCTS TABLE ============
+model Product {
+  id               String   @id @default(cuid())
+  store_id         String
+  external_id      String   // Shopify/WooCommerce product ID
+  title            String
+  image_url        String?
+  category         String?
+  is_tryon_enabled Boolean  @default(true)
+  last_synced_at   DateTime?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  store           Store          @relation(fields: [store_id], references: [id])
+  try_on_sessions TryOnSession[]
+  try_on_results  TryOnResult[]
+
+  @@unique([store_id, external_id])
+}
+
+// ============ USER PHOTOS TABLE ============
+model UserPhoto {
+  id             String   @id @default(cuid())
+  store_id       String
+  s3_key         String   // S3 file path
+  content_type   String?
+  created_at     DateTime @default(now())
+
+  store            Store            @relation(fields: [store_id], references: [id])
+  try_on_sessions TryOnSession[]
+}
+
+// ============ TRY-ON SESSIONS TABLE ============
+model TryOnSession {
+  id            String    @id @default(cuid())
+  store_id      String
+  product_id    String
+  user_photo_id String?
+  status        String    @default("pending")  // pending, processing, completed, failed
+  job_id        String?   // AI provider's job ID
+  provider      String?   // AI provider: 'kling' via opentryon-server
+  credits_used  Int       @default(1)
+  created_at    DateTime  @default(now())
+  completed_at  DateTime?
+
+  store         Store         @relation(fields: [store_id], references: [id])
+  product       Product       @relation(fields: [product_id], references: [id])
+  user_photo    UserPhoto?    @relation(fields: [user_photo_id], references: [id])
+  try_on_result TryOnResult?
+
+  @@index([store_id, created_at(sort: Desc)])
+}
+
+// ============ TRY-ON RESULTS TABLE ============
+model TryOnResult {
+  id               String   @id @default(cuid())
+  session_id       String   @unique
+  product_id       String
+  result_image_url String   // S3/Cloudinary URL
+  status           String   @default("completed")
+  error_message    String?
+  created_at       DateTime @default(now())
+
+  session TryOnSession @relation(fields: [session_id], references: [id])
+  product Product     @relation(fields: [product_id], references: [id])
+}
+
+// ============ CREDIT TRANSACTIONS TABLE ============
+model CreditTransaction {
+  id               String   @id @default(cuid())
+  store_id         String
+  amount           Int      // + = purchase, - = usage
+  transaction_type String   // 'purchase' | 'usage' | 'refund'
+  description      String?
+  created_at       DateTime @default(now())
+
+  store Store @relation(fields: [store_id], references: [id])
+
+  @@index([store_id, created_at])
+}
+
+// ============ REVOKED TOKENS TABLE ============
+model RevokedToken {
+  id         String   @id @default(cuid())
+  token      String   @unique
+  expires_at DateTime
+  created_at DateTime @default(now())
+}
+
+// ============ BANK PAYMENTS TABLE ============
+model BankPayment {
+  id                 String   @id @default(cuid())
+  payment_id         String   @unique
+  store_id           String
+  order_id           String
+  amount             Float
+  status             String   @default("PENDING")  // PENDING, VERIFIED, FAILED, EXPIRED
+  customer_name      String
+  customer_email     String
+  customer_phone     String?
+  bank_account_name  String
+  bank_account_number String
+  bank_routing_number String?
+  created_at         DateTime @default(now())
+  verified_at        DateTime?
+
+  @@index([store_id])
+  @@index([payment_id])
+  @@index([order_id])
+}
+
+// ============ PAYMENTS TABLE (bKash/Nagad/Stripe) ============
+model Payment {
+  id               String   @id @default(cuid())
+  payment_id       String   @unique
+  store_id         String
+  amount           Float
+  credits          Int
+  method           String   // 'bkash' | 'nagad' | 'stripe'
+  status           String   @default("pending")  // pending, processing, completed, failed
+  phone_number     String?
+  transaction_id   String?
+  gateway_response String?
+  error_message    String?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  store Store @relation(fields: [store_id], references: [id])
+
+  @@index([store_id])
+  @@index([payment_id])
+  @@index([status])
+}

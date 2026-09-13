@@ -1,0 +1,7 @@
+fastapi==0.124.0
+uvicorn[standard]==0.38.0
+python-dotenv==1.0.1
+requests>=2.31.0
+PyJWT>=2.10.1
+pillow>=10.1.0
+python-multipart==0.0.20
