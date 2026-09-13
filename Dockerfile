@@ -57,8 +57,8 @@ RUN npm ci --omit=dev
 COPY models/prisma ./models/prisma
 RUN npx prisma generate --schema=models/prisma/schema.prisma
 
-# Copy compiled output
-COPY dist ./dist
+# Copy compiled output from builder stage
+COPY --from=builder dist ./dist
 
 # Copy start script
 COPY start.sh ./
