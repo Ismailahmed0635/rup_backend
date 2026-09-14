@@ -13,6 +13,6 @@
     "declaration": true,
     "sourceMap": true
   },
-  "include": ["app/**/*", "api/**/*"],
+  "include": ["src/**/*", "api/**/*"],
   "exclude": ["node_modules", "dist", "models", "services", "scripts", "uploads"]
 }

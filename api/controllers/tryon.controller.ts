@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { tryonService } from '../../app/services/tryon.service';
+import { tryonService } from '../../src/services/tryon.service';
 
 export const tryonController = {
   getSessions: async (req: Request, res: Response) => {

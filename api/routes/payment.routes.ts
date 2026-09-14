@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { body, param } from 'express-validator';
 import { paymentController } from '../controllers/payment.controller';
-import { verifyCallbackAuth } from '../../app/middleware/admin.middleware';
-import { authenticate } from '../../app/middleware/auth.middleware';
-import { validateRequest } from '../../app/middleware/error.middleware';
+import { verifyCallbackAuth } from '../../src/middleware/admin.middleware';
+import { authenticate } from '../../src/middleware/auth.middleware';
+import { validateRequest } from '../../src/middleware/error.middleware';
 
 const router = Router();
 

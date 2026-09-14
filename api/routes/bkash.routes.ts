@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { body, param } from 'express-validator';
-import { bkashService } from '../../app/services/bkash.service';
-import { authenticate } from '../../app/middleware/auth.middleware';
-import { verifyCallbackAuth } from '../../app/middleware/admin.middleware';
-import { validateRequest } from '../../app/middleware/error.middleware';
+import { bkashService } from '../../src/services/bkash.service';
+import { authenticate } from '../../src/middleware/auth.middleware';
+import { verifyCallbackAuth } from '../../src/middleware/admin.middleware';
+import { validateRequest } from '../../src/middleware/error.middleware';
 
 const router = Router();
 

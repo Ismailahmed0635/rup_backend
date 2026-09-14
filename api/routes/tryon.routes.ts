@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
 import { tryonController } from '../controllers/tryon.controller';
-import { validateRequest } from '../../app/middleware/error.middleware';
-import { authenticate } from '../../app/middleware/auth.middleware';
+import { validateRequest } from '../../src/middleware/error.middleware';
+import { authenticate } from '../../src/middleware/auth.middleware';
 
 const router = Router();
 

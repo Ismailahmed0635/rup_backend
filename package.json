@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon app/index.ts",
     "build": "tsc",
-    "start": "node dist/app/index.js",
+    "start": "node dist/src/index.js",
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "prettier": "prettier --write ."

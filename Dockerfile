@@ -23,7 +23,7 @@ RUN npx prisma generate --schema=models/prisma/schema.prisma
 
 # Copy source code
 COPY tsconfig.json ./
-COPY app ./app
+COPY src ./src
 COPY api ./api
 
 # Compile TypeScript

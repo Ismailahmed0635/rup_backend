@@ -1,9 +1,10 @@
 services:
   - type: web
     name: rup-backend
-    runtime: docker
+    runtime: node
     rootDir: .
-    dockerfilePath: Dockerfile
+    buildCommand: npm install && npx prisma generate --schema=models/prisma/schema.prisma && npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production

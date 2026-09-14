@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { paymentService } from '../../app/services/payment.service';
+import { paymentService } from '../../src/services/payment.service';
 import { body, param } from 'express-validator';
 
 export const paymentController = {

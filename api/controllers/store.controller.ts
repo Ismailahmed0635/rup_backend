@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { storeService } from '../../app/services/store.service';
-import { prisma } from '../../app/config/database';
+import { storeService } from '../../src/services/store.service';
+import { prisma } from '../../src/config/database';
 
 export const storeController = {
   register: async (req: Request, res: Response) => {

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
-import { bankPaymentService } from '../../app/services/bank.payment.service';
-import { authenticate } from '../../app/middleware/auth.middleware';
-import { env } from '../../app/config/env';
+import { bankPaymentService } from '../../src/services/bank.payment.service';
+import { authenticate } from '../../src/middleware/auth.middleware';
+import { env } from '../../src/config/env';
 
 const router = Router();
 

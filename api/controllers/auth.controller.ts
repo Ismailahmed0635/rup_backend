@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { authService } from '../../app/services/auth.service';
-import { oauthService } from '../../app/services/oauth.service';
-import { prisma } from '../../app/config/database';
-import { supabase } from '../../app/supabase';
+import { authService } from '../../src/services/auth.service';
+import { oauthService } from '../../src/services/oauth.service';
+import { prisma } from '../../src/config/database';
+import { supabase } from '../../src/supabase';
 
 export const authController = {
   register: async (req: Request, res: Response) => {

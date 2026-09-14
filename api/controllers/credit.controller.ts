@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { creditService } from '../../app/services/credit.service';
+import { creditService } from '../../src/services/credit.service';
 
 export const creditController = {
   getBalance: async (req: Request, res: Response) => {

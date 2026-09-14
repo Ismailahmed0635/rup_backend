@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
 import { creditController } from '../controllers/credit.controller';
-import { validateRequest } from '../../app/middleware/error.middleware';
-import { authenticate } from '../../app/middleware/auth.middleware';
-import { requireAdmin } from '../../app/middleware/admin.middleware';
+import { validateRequest } from '../../src/middleware/error.middleware';
+import { authenticate } from '../../src/middleware/auth.middleware';
+import { requireAdmin } from '../../src/middleware/admin.middleware';
 
 const router = Router();
 
