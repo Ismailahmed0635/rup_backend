@@ -29,9 +29,10 @@ COPY tsconfig.json ./
 COPY app ./app
 COPY api ./api
 
-# Compile TypeScript
-RUN npm run build \
-    && ls dist/ 2>/dev/null || (echo "❌ build failed: dist/ not found" && exit 1)
+# Compile TypeScript — fail loudly if build fails or dist/ is missing
+RUN npm run build
+RUN ls -la dist/ && echo "✅ Build output found" \
+    || { echo "❌ FATAL: dist/ not found after build"; exit 1; }
 
 # ============================================
 # Stage 2: Production
@@ -58,7 +59,7 @@ COPY models/prisma ./models/prisma
 RUN npx prisma generate --schema=models/prisma/schema.prisma
 
 # Copy compiled output from builder stage
-COPY --from=builder dist ./dist
+COPY --from=builder /app/dist ./dist
 
 # Copy start script
 COPY start.sh ./

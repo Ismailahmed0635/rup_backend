@@ -2,6 +2,7 @@ services:
   - type: web
     name: rup-backend
     runtime: docker
+    rootDir: .
     dockerfilePath: Dockerfile
     envVars:
       - key: NODE_ENV
