@@ -44,33 +44,32 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Widget static files (no auth required) - cached so merchants' pages load fast.
-// Resolve ../../widget/dist relative to this file, which works from both the
-// TypeScript source (backend/app) and the compiled output (backend/dist/app).
-const widgetDistCandidates = [
-  process.env.WIDGET_DIST_PATH,
-  path.resolve(__dirname, '../../../widget/dist'),    // dev: backend/app/server.ts
-  path.resolve(__dirname, '../../../../widget/dist'), // prod: backend/dist/app/server.js
-].filter(Boolean) as string[];
+// Skip in serverless (Vercel) — no persistent file system available.
+if (!process.env.VERCEL) {
+  const widgetDistCandidates = [
+    process.env.WIDGET_DIST_PATH,
+    path.resolve(__dirname, '../../../widget/dist'),
+    path.resolve(__dirname, '../../../../widget/dist'),
+  ].filter(Boolean) as string[];
 
-const widgetDist =
-  widgetDistCandidates.find((candidate) => fs.existsSync(candidate)) ||
-  widgetDistCandidates[widgetDistCandidates.length - 1];
+  const widgetDist =
+    widgetDistCandidates.find((candidate) => fs.existsSync(candidate)) ||
+    widgetDistCandidates[widgetDistCandidates.length - 1];
 
-if (!fs.existsSync(widgetDist)) {
-  console.warn(`[widget] widget/dist not found at: ${widgetDistCandidates.join(', ')}`);
+  if (widgetDist && fs.existsSync(widgetDist)) {
+    app.use('/widget', express.static(widgetDist, {
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, path) => {
+        if (path.endsWith('.html')) {
+          res.setHeader('Cache-Control', 'public, max-age=300');
+        } else {
+          res.setHeader('Cache-Control', 'public, max-age=3600');
+        }
+      },
+    }));
+  }
 }
-
-app.use('/widget', express.static(widgetDist, {
-  etag: true,
-  lastModified: true,
-  setHeaders: (res, path) => {
-    if (path.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'public, max-age=300');
-    } else {
-      res.setHeader('Cache-Control', 'public, max-age=3600');
-    }
-  },
-}));
 
 // Auth routes (no auth required)
 app.use('/api/auth', authRoutes);

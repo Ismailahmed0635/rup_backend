@@ -6,13 +6,6 @@ dist/
 .coverage
 logs/
 uploads/
-render-env.txt
-
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
 
 # OS
 .DS_Store
