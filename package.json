@@ -2,14 +2,11 @@
   "name": "rup-backend",
   "version": "1.0.0",
   "description": "Rup Backend API Server",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "scripts": {
-    "dev": "nodemon app/index.ts",
+    "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "start": "node dist/src/index.js",
-    "test": "jest",
-    "lint": "eslint . --ext .ts",
-    "prettier": "prettier --write ."
+    "start": "node dist/src/index.js"
   },
   "keywords": [
     "rup",
